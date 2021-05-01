@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const bootcamps = require("./routes/bootcamps");
+const errorHandler = require("./middleware/errorHandler");
 const connectDB = require("./config/db");
 const colors = require("colors");
 colors.setTheme({
@@ -28,6 +29,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use("/api/v1/bootcamps", bootcamps);
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 
