@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-// const slugify = require("slugify");
+const slugify = require("slugify");
 // const geocoder = require("../utils/geocoder");
 
 const BootcampSchema = new mongoose.Schema(
@@ -111,30 +111,40 @@ const BootcampSchema = new mongoose.Schema(
   // }
 );
 
-// // Create bootcamp slug from the name
-// BootcampSchema.pre('save', function(next) {
-//   this.slug = slugify(this.name, { lower: true });
-//   next();
-// });
+// Create bootcamp slug from the name
+BootcampSchema.pre("save", function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
 
-// // Geocode & create location field
-// BootcampSchema.pre('save', async function(next) {
-//   const loc = await geocoder.geocode(this.address);
-//   this.location = {
-//     type: 'Point',
-//     coordinates: [loc[0].longitude, loc[0].latitude],
-//     formattedAddress: loc[0].formattedAddress,
-//     street: loc[0].streetName,
-//     city: loc[0].city,
-//     state: loc[0].stateCode,
-//     zipcode: loc[0].zipcode,
-//     country: loc[0].countryCode
-//   };
+// Geocode & create location field
+BootcampSchema.pre("save", async function (next) {
+  // const loc = await geocoder.geocode(this.address);
+  // this.location = {
+  //   type: "Point",
+  //   coordinates: [loc[0].longitude, loc[0].latitude],
+  //   formattedAddress: loc[0].formattedAddress,
+  //   street: loc[0].streetName,
+  //   city: loc[0].city,
+  //   state: loc[0].stateCode,
+  //   zipcode: loc[0].zipcode,
+  //   country: loc[0].countryCode,
+  // };
+  this.location = {
+    type: "Point",
+    coordinates: [48.8698679, 2.3072976],
+    formattedAddress: "29 champs elysée",
+    street: "Champs-Élysées",
+    city: "Paris",
+    state: "FR",
+    zipcode: "75008",
+    country: "France",
+  };
 
-//   // Do not save address in DB
-//   this.address = undefined;
-//   next();
-// });
+  // Do not save address in DB
+  this.address = undefined;
+  next();
+});
 
 // // Cascade delete courses when a bootcamp is deleted
 // BootcampSchema.pre('remove', async function(next) {
