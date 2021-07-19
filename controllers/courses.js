@@ -1,6 +1,6 @@
 const Course = require("../models/Course");
 const Bootcamp = require("../models/Bootcamp");
-// const ErrorResponse = require("../utils/errorResponse");
+const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/asyncHandler");
 
 // @desc get all Courses
@@ -40,11 +40,22 @@ const getCourse = asyncHandler(async (req, res, next) => {
 // @access Private
 const addCourse = asyncHandler(async (req, res, next) => {
   req.body.bootcamp = req.params.bootcampId;
+  req.body.user = req.user.id;
   const bootcamp = await Bootcamp.findById(req.params.bootcampId);
+
   if (!bootcamp) {
     return next(
       new ErrorResponse(
         `bootcamp not found with id: ${req.params.bootcampId}`,
+        404
+      )
+    );
+  }
+
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User  ${req.user.id} is not authorize to add course to bootcamp id: ${bootcamp._id}`,
         404
       )
     );
@@ -65,6 +76,15 @@ const updateCourse = asyncHandler(async (req, res, next) => {
     );
   }
 
+  if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User  ${req.user.id} is not authorize for update Course id: ${course._id}`,
+        404
+      )
+    );
+  }
+
   course = await Course.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
@@ -81,6 +101,15 @@ const deleteCourse = asyncHandler(async (req, res, next) => {
   if (!course) {
     return next(
       new ErrorResponse(`course not found with id: ${req.params.id}`, 404)
+    );
+  }
+
+  if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User  ${req.user.id} is not authorize for delete Course id: ${course._id}`,
+        404
+      )
     );
   }
 

@@ -32,6 +32,7 @@ router
   .get("/", getBootcamps)
   .post("/", protect, authorize("publisher", "admin"), createBootcamp);
 router.get("/radius/:zipcode/:distance", getBootcampInRadius);
+
 router
   .get("/:id", getBootcamp)
   .put("/:id", protect, authorize("publisher", "admin"), updateBootcamp)
