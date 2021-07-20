@@ -4,6 +4,7 @@ const dotenv = require("dotenv");
 const Bootcamp = require("./models/Bootcamp");
 const Course = require("./models/Course");
 const User = require("./models/User");
+const Review = require("./models/Review");
 const colors = require("colors");
 colors.setTheme({
   silly: "rainbow",
@@ -39,12 +40,16 @@ const courseData = JSON.parse(
 const usersData = JSON.parse(
   fs.readFileSync(`${__dirname}/_data/users.json`, "utf-8")
 );
+const reviewsData = JSON.parse(
+  fs.readFileSync(`${__dirname}/_data/reviews.json`, "utf-8")
+);
 
 async function insertBootcamp() {
   try {
     await Bootcamp.create(bootcampData);
     await Course.create(courseData);
     await User.create(usersData);
+    await Review.create(reviewsData);
     console.log("Insert Bootcamp successfully".success);
     // exit on success
     process.exit();
@@ -60,6 +65,7 @@ async function destroyBootcamp() {
     await Bootcamp.deleteMany();
     await Course.deleteMany();
     await User.deleteMany();
+    await Review.deleteMany();
     console.log("Delete Bootcamp successfully".error);
     process.exit();
   } catch (error) {

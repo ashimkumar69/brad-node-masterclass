@@ -15,11 +15,13 @@ const Bootcamp = require("../models/Bootcamp");
 const router = express.Router();
 
 const courseRoute = require("./courses");
+const reviewsRoute = require("./reviews");
 
 const { protect, authorize } = require("../middleware/auth");
 
 // redirect to other route
 router.use("/:bootcampId/courses", courseRoute);
+router.use("/:bootcampId/reviews", reviewsRoute);
 
 router
   .route("/:id/photo")
