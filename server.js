@@ -11,6 +11,12 @@ const connectDB = require("./config/db");
 const colors = require("colors");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+const xss = require("xss-clean");
+const rateLimit = require("express-rate-limit");
+const hpp = require("hpp");
+const cors = require("cors");
 
 colors.setTheme({
   silly: "rainbow",
@@ -39,6 +45,18 @@ if (process.env.NODE_ENV === "development") {
 // file upload
 app.use(fileUpload());
 
+// To remove data, use:
+app.use(mongoSanitize());
+app.use(helmet());
+app.use(xss());
+const apiLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minute window
+  max: 3, // start blocking after 5 requests
+  message: "Too many request, please try again 5 minutes latter",
+});
+app.use(apiLimiter);
+app.use(hpp());
+app.use(cors());
 // static folder
 app.use(express.static(path.join(__dirname, "public")));
 
